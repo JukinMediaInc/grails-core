@@ -69,10 +69,6 @@ class GrailsProjectRunner extends BaseSettingsApi {
         return warCreator
     }
 
-    String getServerContextPath() {
-        return serverContextPath
-    }
-
     String getUrl () {
         "http://${serverHost ?: 'localhost'}:$serverPort$serverContextPath"
     }
@@ -110,6 +106,7 @@ class GrailsProjectRunner extends BaseSettingsApi {
         this.warCreator = warCreator
         this.eventListener = warCreator.eventListener
         this.classLoader = classLoader
+        this.serverContextPath = this.projectPackager.calculateServerContextPath(true)
         webXmlFile = buildSettings.webXmlLocation
         basedir = buildSettings.baseDir.absolutePath
         warName = warCreator.configureWarName()
