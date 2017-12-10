@@ -164,7 +164,9 @@ class FunctionalTestPhaseConfigurer extends DefaultTestPhaseConfigurer {
             functionalBaseUrl = baseUrl
         } else {
             functionalBaseUrl = httpsBaseUrl ? projectRunner.urlHttps : projectRunner.url
-            functionalBaseUrl += '/'
+            if (!functionalBaseUrl.endsWith('/')) {
+                functionalBaseUrl += '/'
+            }
         }
 
         System.setProperty(buildSettings.FUNCTIONAL_BASE_URL_PROPERTY, functionalBaseUrl)
