@@ -101,22 +101,32 @@ class GrailsProjectPackager extends BaseSettingsApi {
     String configureServerContextPath() {
         createConfig()
         if (serverContextPath == null) {
-            // Get the application context path by looking for a property named 'app.context' in the following order of precedence:
-            //    System properties
-            //    application.properties
-            //    config
-            //    default to grailsAppName if not specified
-
-            serverContextPath = System.getProperty("app.context")
-            serverContextPath = serverContextPath ?: metadata.get('app.context')
-            serverContextPath = serverContextPath ?: getServerContextPathFromConfig()
-            serverContextPath = serverContextPath ?: grailsAppName
-
-            if (!serverContextPath.startsWith('/')) {
-                serverContextPath = "/${serverContextPath}"
-            }
+            serverContextPath = calculateServerContextPath()
         }
         return serverContextPath
+    }
+
+    /** Allow a way to get the serverContextPath without affecting state */
+    @CompileStatic
+    String calculateServerContextPath(withoutConfig=false) {
+        if (!withoutConfig) createConfig()
+        // Get the application context path by looking for a property named 'app.context' in the following order of precedence:
+        //    System properties
+        //    application.properties
+        //    config
+        //    default to grailsAppName if not specified
+        String path = System.getProperty("app.context")
+        path = path ?: (metadata.get('app.context') as String)
+        if (!withoutConfig) {
+            path = path ?: getServerContextPathFromConfig()
+        }
+        path = path ?: grailsAppName
+
+        // at this point, path might be "/", "foo", or "/foo"
+        if (!path.startsWith('/')) {
+            path = "/${path}"
+        }
+        return path
     }
 
     @CompileStatic
