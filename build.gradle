@@ -46,6 +46,9 @@ ext {
     objenesisVersion = "1.4"
     servletApiVersion = "3.0.1"
 
+    sourceCompatibility = "1.6"
+    targetCompatibility = "1.6"
+
     isJava8Compatible = org.gradle.api.JavaVersion.current().isJava8Compatible()
 }
 
